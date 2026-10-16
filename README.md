@@ -26,6 +26,11 @@ Open `index.html` in a browser (Edge or Chrome). No build step and no server; ev
 | `data.js` | The product's strings: harnesses, model pickers, ways to reach a model. Names marked `VERIFY` are placeholders |
 | `vendor/` | [Lenis](https://github.com/darkroomengineering/lenis) 1.3.26 for smooth scrolling (MIT) and [Codicons](https://github.com/microsoft/vscode-codicons) (CC BY 4.0) |
 
+## Working on it
+
+See [AGENTS.md](AGENTS.md): how it's built, the design rules, and how to check a change. Coding agents
+(GitHub Copilot, Codex, Claude Code) read it automatically.
+
 ## Before it ships
 
 - Check the model names marked `VERIFY` in `data.js` against the product's model picker.
