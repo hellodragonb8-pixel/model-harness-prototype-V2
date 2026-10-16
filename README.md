@@ -13,7 +13,7 @@ pauses, plays and replays.
 Open `index.html` in a browser (Edge or Chrome). No build step and no server; everything it needs is in this folder.
 
 - Scroll down once to start it. The numbered stops at the bottom are a review tool: each jumps to a moment, paused.
-- `?u=0.42` shows a still frame at that point in the scroll (0 to 1).
+- `?u=0.42` shows a still frame at that point in the animation (0 to 1).
 - `?motion=off` shows the reduced-motion version (also used when the system asks for reduced motion).
 
 ## Files
