@@ -7,11 +7,13 @@
  * a line under the session reads the whole configuration. The beat visits only configurations the product offers:
  * Codex, its ChatGPT models, a ChatGPT account; Claude, its Anthropic models, your Anthropic API key; then Copilot.
  *
- * Everything is a pure function of scroll (u, 0 to 1 over the pinned section), so it reverses exactly. Motion is
- * transform and opacity, except the rows' clip box, which grows like the panel it is.
+ * It autoplays: one scroll brings the section into place, it plays once (about 8 seconds) and stops on the plain
+ * Copilot session, and the next scroll moves on. Every frame is a pure function of the playhead (u, 0 to 1), so the
+ * review stops can jump anywhere. Motion is transform and opacity, except the rows' clip box, which grows like the
+ * panel it is.
  *
  *   ?u=0.42     a still frame at u (for review and screenshots)
- *   ?motion=off reduced motion: the still at Claude's key, unpinned (also with prefers-reduced-motion)
+ *   ?motion=off reduced motion: the still at Claude's key, no autoplay (also with prefers-reduced-motion)
  */
 (() => {
 	'use strict';
@@ -435,29 +437,118 @@
 		});
 	}
 
-	// ------------------------------------------------------------------ scroll
+	// ------------------------------------------------------------------ playback
 
-	const LEN = 6.5;
+	// The section plays on its own, not with the scroll. Scrolling down to it glides it into place and the rest of that
+	// flick is absorbed; then it plays once and stops on the plain Copilot session. Any later scroll moves on, even
+	// mid-play (nothing holds the page); if it leaves before the end, it is set back on Copilot once it's out of view.
+	// The button pauses, plays and replays (anything that moves on its own for more than five seconds needs one).
+	const PLAY = { from: TL.words[1], to: 1, ms: 8000, lead: 450 };
 	let lenis = null;
-	function progress() {
-		if (still) { return fixedU != null ? fixedU : STILL; }
-		const top = scene.offsetTop;
-		const len = scene.offsetHeight - innerHeight;
-		return clamp((scrollY - top) / Math.max(1, len));
+	let u = still ? (fixedU != null ? fixedU : STILL) : PLAY.from;
+	let state = 'ready';
+	let u0 = u;
+	let t0 = 0;
+	let holding = false;
+	let snapping = false;
+	let btn = null;
+	const progress = () => u;
+	const sceneTop = () => scene.getBoundingClientRect().top;
+	const ICONS = { playing: ['debug-pause', 'Pause'], paused: ['play', 'Play'], done: ['debug-restart', 'Replay'], ready: ['play', 'Play'] };
+
+	function drawBtn() {
+		if (!btn) { return; }
+		const [i, label] = ICONS[state];
+		btn.innerHTML = `${ic(i)}<span>${label}</span>`;
+		btn.setAttribute('aria-label', `${label} the animation`);
 	}
+	function play(from) {
+		if (from != null) { u = from; }
+		if (u >= PLAY.to) { u = PLAY.from; }
+		u0 = u;
+		t0 = performance.now() + (u0 <= PLAY.from ? PLAY.lead : 0);
+		state = 'playing';
+		drawBtn();
+	}
+	function pause() {
+		state = 'paused';
+		drawBtn();
+	}
+	function finish() {
+		u = PLAY.to;
+		state = 'done';
+		drawBtn();
+	}
+
+	// Brings the section's top to the screen's top, then holds the scroll a moment so the same flick doesn't carry on.
+	function snapIn(then) {
+		snapping = true;
+		const y = scrollY + sceneTop();
+		const settle = () => {
+			holding = true;
+			setTimeout(() => {
+				holding = false;
+				snapping = false;
+				if (then) { then(); }
+			}, 500);
+		};
+		if (lenis) {
+			lenis.scrollTo(y, { duration: 0.9, lock: true, force: true, onComplete: settle });
+		} else {
+			scrollTo({ top: y, behavior: 'smooth' });
+			setTimeout(settle, 700);
+		}
+	}
+
+	let lastY = 0;
+	function watch(now) {
+		const top = sceneTop();
+		const vh = innerHeight;
+		const down = scrollY > lastY;
+		lastY = scrollY;
+		if (state === 'ready' && !snapping) {
+			if (down && top > 2 && top < vh * 0.8) {
+				snapIn(play);
+			} else if (Math.abs(top) <= 2) {
+				// Arrived without the glide (a touch scroll, or a jump): just play.
+				play();
+			}
+		}
+		if (state === 'playing') {
+			u = Math.min(PLAY.to, u0 + (Math.max(0, now - t0) / PLAY.ms) * (PLAY.to - PLAY.from));
+			if (u >= PLAY.to) { finish(); }
+		}
+		// Left before the end: back on Copilot once it's out of view.
+		if ((state === 'playing' || state === 'paused') && !snapping && (top >= vh || top + scene.offsetHeight <= 0)) {
+			finish();
+		}
+	}
+
 	function sizeScene() {
-		scene.style.height = still ? '100vh' : `${(1 + LEN) * 100}vh`;
+		scene.style.height = '100vh';
 	}
 
 	function start() {
 		sizeScene();
 		layout();
 		frame(progress());
-		if (!still && window.Lenis) {
-			lenis = new Lenis({ lerp: 0.12, smoothWheel: true });
+		if (!still) {
+			btn = document.createElement('button');
+			btn.type = 'button';
+			btn.className = 'mh-play';
+			stage.appendChild(btn);
+			btn.addEventListener('click', () => {
+				if (state === 'playing') { pause(); } else if (state === 'paused') { play(); } else { play(PLAY.from); }
+			});
+			drawBtn();
+			if (window.Lenis) {
+				lenis = new Lenis({ lerp: 0.12, smoothWheel: true, virtualScroll: () => !holding });
+			}
 		}
+		lastY = scrollY;
 		const tick = t => {
 			if (lenis) { lenis.raf(t); }
+			if (!still) { watch(t); }
 			frame(progress());
 			requestAnimationFrame(tick);
 		};
@@ -470,26 +561,25 @@
 		document.documentElement.classList.remove('mh-booting');
 	}
 
-	// The review pill: jump to each stop.
+	// The review pill: jump to each stop, paused there.
 	function buildStops() {
 		const nav = document.getElementById('mh-stops');
 		if (!nav || still) {
 			if (nav) { nav.hidden = true; }
 			return;
 		}
-		nav.innerHTML = STOPS.map(([n, u], i) => `<button type="button" data-u="${u}" title="${esc(n)}">${i + 1}</button>`).join('') + '<span class="mh-stop-name" aria-live="polite"></span>';
+		nav.innerHTML = STOPS.map(([n, su], i) => `<button type="button" data-u="${su}" title="${esc(n)}">${i + 1}</button>`).join('') + '<span class="mh-stop-name" aria-live="polite"></span>';
 		const name = nav.querySelector('.mh-stop-name');
 		nav.addEventListener('click', e => {
 			const b = e.target.closest('button');
 			if (!b) { return; }
-			const u = parseFloat(b.dataset.u);
-			const y = scene.offsetTop + u * (scene.offsetHeight - innerHeight);
-			if (lenis) { lenis.scrollTo(y, { duration: 1.4 }); } else { scrollTo({ top: y, behavior: 'smooth' }); }
+			u = parseFloat(b.dataset.u);
+			pause();
+			if (Math.abs(sceneTop()) > 2) { snapIn(); }
 		});
 		const btns = [...nav.querySelectorAll('button')];
 		let cur = -1;
 		setInterval(() => {
-			const u = progress();
 			let best = 0;
 			STOPS.forEach(([, su], i) => { if (Math.abs(su - u) < Math.abs(STOPS[best][1] - u)) { best = i; } });
 			if (best === cur) { return; }
