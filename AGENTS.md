@@ -1,6 +1,7 @@
 # Working on this prototype
 
 Instructions for coding agents (and people) making changes here. Read the README first for what the prototype is.
+To move the section onto the live site, follow [INTEGRATING.md](INTEGRATING.md).
 
 ## What it is
 

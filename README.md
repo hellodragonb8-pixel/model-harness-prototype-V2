@@ -29,7 +29,8 @@ Open `index.html` in a browser (Edge or Chrome). No build step and no server; ev
 ## Working on it
 
 See [AGENTS.md](AGENTS.md): how it's built, the design rules, and how to check a change. Coding agents
-(GitHub Copilot, Codex, Claude Code) read it automatically.
+(GitHub Copilot, Codex, Claude Code) read it automatically. To put the section on the live site, follow
+[INTEGRATING.md](INTEGRATING.md).
 
 ## Before it ships
 
