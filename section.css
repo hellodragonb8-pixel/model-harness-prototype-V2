@@ -818,10 +818,32 @@ html.mh-booting body {
 	position: absolute;
 	left: 310px;
 	width: 36px;
-	height: 1px;
-	background: linear-gradient(to right, var(--ring-c), rgba(77, 170, 252, .25));
+	height: 2px;
+	margin-top: -1px;
+	background: var(--ring-c);
 	opacity: 0;
 	visibility: hidden;
+}
+
+/* A dot at each end, so the line reads as joining the row to its picker. */
+.mh-line::before,
+.mh-line::after {
+	content: "";
+	position: absolute;
+	top: 50%;
+	width: 6px;
+	height: 6px;
+	margin-top: -3px;
+	border-radius: 50%;
+	background: var(--ring-c);
+}
+
+.mh-line::before {
+	left: -3px;
+}
+
+.mh-line::after {
+	right: -3px;
 }
 
 /* ------------------------------------------------------------------ the names and the line under the session */
