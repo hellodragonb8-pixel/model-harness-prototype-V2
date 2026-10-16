@@ -1,10 +1,10 @@
 # Choose your model and harness: prototype, version 2
 
 A prototype of the "Choose your model and harness" section of the VS Code homepage. The chat session comes apart into
-three rows (harness, model, access); each row's real picker opens beside the session and the choice changes, visiting
-only configurations the product offers. It ends back on the plain Copilot session.
+three rows (harness, model, access); each row's real picker opens beside the session and the choice changes to Codex, its
+ChatGPT model and a ChatGPT account. It ends back on the plain Copilot session.
 
-It autoplays: one scroll down glides the section into place, it plays once (about 8 seconds) and stops on Copilot, and
+It autoplays: one scroll down glides the section into place, it plays once (about 7.5 seconds) and stops on Copilot, and
 the next scroll moves on. Scrolling during the play moves on too; nothing holds the page. A button in the corner
 pauses, plays and replays.
 

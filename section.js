@@ -5,9 +5,9 @@
  * session. In each turn the row's picker opens beside the session, the choice moves to its new item, the row rolls to
  * it, and the picker closes. Each row is named at the left in plain words, and
  * a line under the session reads the whole configuration. The beat visits only configurations the product offers:
- * Codex, its ChatGPT models, a ChatGPT account; Claude, its Anthropic models, your Anthropic API key; then Copilot.
+ * Codex, its ChatGPT model, a ChatGPT account; then back to Copilot.
  *
- * It autoplays: one scroll brings the section into place, it plays once (about 8 seconds) and stops on the plain
+ * It autoplays: one scroll brings the section into place, it plays once (about 7.5 seconds) and stops on the plain
  * Copilot session, and the next scroll moves on. Every frame is a pure function of the playhead (u, 0 to 1), so the
  * review stops can jump anywhere. Motion is transform and opacity, except the rows' clip box, which grows like the
  * panel it is.
@@ -58,7 +58,7 @@
 	// ------------------------------------------------------------------ the configurations
 
 	// The beat's configurations, in order, then back to the first. Each roll has one state per configuration.
-	const CONFIGS = ['copilot', 'codex', 'claude', 'copilot'];
+	const CONFIGS = ['copilot', 'codex', 'copilot'];
 	const PICK = {
 		copilot: { model: D.harnesses.copilot.model, access: 'copilot' },
 		codex: { model: D.pickers.codex.models[0], access: 'chatgpt' },
@@ -67,14 +67,11 @@
 	const accessOf = h => D.access[h].find(a => a.id === PICK[h].access);
 	const modelIconOf = h => D.tabs[D.pickers[h].active].icon;
 
-	// The turns: six, one per row per harness, then one gesture back to Copilot.
+	// The turns: three, one per row, then one gesture back to Copilot.
 	const STEPS = [
 		{ layer: 'harness', h: 'codex', from: 'copilot' },
 		{ layer: 'model', h: 'codex' },
 		{ layer: 'access', h: 'codex' },
-		{ layer: 'harness', h: 'claude', from: 'codex' },
-		{ layer: 'model', h: 'claude' },
-		{ layer: 'access', h: 'claude' },
 	];
 
 	// Shares of the pin. Within a turn's span s (0 to 1): its picker opens, the choice moves, the row rolls, it closes.
@@ -82,13 +79,13 @@
 		words: [0, 0.04],
 		unfold: [0.05, 0.13],
 		step0: 0.15,
-		span: 0.095,
+		span: 0.17,
 		open: [0, 0.18],
 		choose: [0.22, 0.48],
 		roll: [0.5, 0.7],
 		close: [0.78, 0.95],
-		back: [0.8, 0.87],
-		fold: [0.89, 0.97],
+		back: [0.74, 0.82],
+		fold: [0.86, 0.95],
 	};
 	const stepS = (u, i) => (u - (TL.step0 + TL.span * i)) / TL.span;
 	const QUIET = TL.step0 + TL.span * STEPS.length + 0.025;
@@ -98,10 +95,10 @@
 		['Taken apart', 0.14],
 		...STEPS.map((st, i) => [`${D.harnesses[st.h].label}: ${st.layer === 'harness' ? 'harness' : st.layer}`, TL.step0 + TL.span * (i + 0.74)]),
 		['All three', QUIET],
-		['Back on Copilot', 0.88],
+		['Back on Copilot', 0.84],
 		['Closed', 0.99],
 	];
-	const STILL = TL.step0 + TL.span * 5.74;
+	const STILL = TL.step0 + TL.span * (STEPS.length - 0.26);
 
 	// ------------------------------------------------------------------ pieces
 
@@ -443,7 +440,7 @@
 	// flick is absorbed; then it plays once and stops on the plain Copilot session. Any later scroll moves on, even
 	// mid-play (nothing holds the page); if it leaves before the end, it is set back on Copilot once it's out of view.
 	// The button pauses, plays and replays (anything that moves on its own for more than five seconds needs one).
-	const PLAY = { from: TL.words[1], to: 1, ms: 8000, lead: 450 };
+	const PLAY = { from: TL.words[1], to: 1, ms: 7500, lead: 450 };
 	let lenis = null;
 	let u = still ? (fixedU != null ? fixedU : STILL) : PLAY.from;
 	let state = 'ready';
