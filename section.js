@@ -251,14 +251,10 @@
 		return m;
 	});
 
-	// The names, in the page's type: what each row is, in plain words.
-	const NAMES = [
-		['Harness', 'Who runs the session'],
-		['Model', 'Which model does the thinking'],
-		['Access', 'How you reach the model'],
-	];
-	const labels = NAMES.map(([n, d]) => {
-		const el = div('mh-label', `<b>${n}</b><span>${d}</span>`);
+	// The names, in the page's type: what each row is.
+	const NAMES = ['Harness', 'Model', 'Access'];
+	const labels = NAMES.map(n => {
+		const el = div('mh-label', `<b>${n}</b>`);
 		el.setAttribute('aria-hidden', 'true');
 		stage.appendChild(el);
 		return el;
@@ -311,7 +307,8 @@
 		labels.forEach((el, i) => {
 			el.style.display = wide ? '' : 'none';
 			el.style.right = vw - x + 28 + 'px';
-			el.style.top = (y + (rowTop(i) + CTL / 2) * k - 20).toFixed(1) + 'px';
+			// Centered on its row (the name is one 20px line).
+			el.style.top = (y + (rowTop(i) + CTL / 2) * k - 10).toFixed(1) + 'px';
 		});
 		cap.style.top = (y + SH * k + (vh < 760 ? 12 : 18)).toFixed(1) + 'px';
 		menus.forEach(m => {

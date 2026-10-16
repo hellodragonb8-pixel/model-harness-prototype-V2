@@ -840,12 +840,6 @@ html.mh-booting body {
 	color: var(--ink);
 }
 
-.mh-label span {
-	display: block;
-	font: 400 13px/18px var(--font-text);
-	color: var(--ink-3);
-}
-
 .mh-cap {
 	position: absolute;
 	left: 16px;
