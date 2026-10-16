@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en" class="mh-booting">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Choose Your Model and Harness</title>
+<style>html.mh-booting body { opacity: 0; }</style>
+<script>setTimeout(() => document.documentElement.classList.remove('mh-booting'), 4000);</script>
+<link rel="stylesheet" href="vendor/codicons/codicon.css">
+<link rel="stylesheet" href="section.css">
+</head>
+<body class="mh">
+	<!-- A stand-in for the site header, so the section sits under it as on the live page. -->
+	<header class="mh-nav">
+		<div class="mh-nav-in">
+			<a class="mh-brand" href="#" aria-label="Visual Studio Code home"><i class="codicon codicon-vscode" aria-hidden="true"></i><span>Visual Studio Code</span></a>
+			<nav class="mh-links" aria-label="Primary navigation">
+				<a href="#">Features</a>
+				<a href="#">Release Notes</a>
+				<a href="#">Blog</a>
+				<a href="#">Resources</a>
+			</nav>
+			<span class="mh-tools">
+				<button type="button" aria-label="Reduced motion" title="Reduced motion"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6.748 3.25A1.25 1.25 0 1 1 8 4.5a1.25 1.25 0 0 1-1.252-1.25ZM8 1a2.25 2.25 0 0 0-2.19 2.766l-1.614-.651a1.59 1.59 0 0 0-2.076.873 1.59 1.59 0 0 0 .87 2.07L5 6.869v2.384l-1.815 3.41a1.592 1.592 0 1 0 2.81 1.495L8 10.39l2.002 3.768a1.592 1.592 0 1 0 2.81-1.494l-1.814-3.412V6.87l2.008-.811a1.59 1.59 0 0 0 .87-2.07 1.59 1.59 0 0 0-2.076-.873l-1.611.651A2.25 2.25 0 0 0 8 1ZM3.045 4.369a.59.59 0 0 1 .777-.327l3.427 1.385a2 2 0 0 0 1.498 0l3.428-1.385a.59.59 0 0 1 .776.327.59.59 0 0 1-.32.762l-2.008.811a1 1 0 0 0-.625.927v2.383a1 1 0 0 0 .117.47l1.814 3.411a.592.592 0 1 1-1.044.555L8.88 9.921a1 1 0 0 0-1.766 0l-2.003 3.767a.592.592 0 1 1-1.044-.555l1.813-3.41a1 1 0 0 0 .117-.47V6.87a1 1 0 0 0-.625-.927l-2.008-.81a.59.59 0 0 1-.32-.763Z"/></svg></button>
+				<button type="button" aria-label="Search"><i class="codicon codicon-search" aria-hidden="true"></i></button>
+			</span>
+			<a class="mh-dl" href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 5.1 10.3 4v7H3V5.1Zm8.1-1.2L21 2.5V11h-9.9V3.9ZM3 12h7.3v7L3 17.9V12Zm8.1 0H21v8.5l-9.9-1.4V12Z"/></svg><span>Download for Windows</span><span class="mh-dl-chev"><i class="codicon codicon-chevron-down" aria-hidden="true"></i></span></a>
+		</div>
+	</header>
+	<p class="mh-notice">By using VS Code, you agree to its <a href="https://code.visualstudio.com/license">license</a> and <a href="https://go.microsoft.com/fwlink/?LinkId=521839">privacy statement</a>.</p>
+
+	<main>
+		<section class="mh-band" aria-label="About this prototype">
+			<div>
+				<p class="mh-kicker">Prototype: Open the pickers, version 2</p>
+				<p>Choose your model and harness. Scroll to play, or use the numbered stops at the bottom.</p>
+			</div>
+		</section>
+
+		<section class="mh-scene" id="mh-scene" aria-labelledby="mh-title">
+			<div class="mh-stage" id="mh-stage">
+				<div class="mh-words" id="mh-words">
+					<h2 class="mh-h2" id="mh-title">Choose your model and harness.</h2>
+					<p class="mh-body">Use the models in your GitHub Copilot, Microsoft 365, or ChatGPT subscription, or bring any model from any provider with your own key.</p>
+					<a class="mh-more" href="https://code.visualstudio.com/docs/agents/concepts/agent-harnesses">Learn more about models and harnesses<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3.5 10.5 8 6 12.5" /></svg></a>
+				</div>
+				<!-- The drawing illustrates the words above; its rolls hold every state at once, so it stays out of the
+				     accessibility tree. -->
+			</div>
+		</section>
+
+		<section class="mh-band" aria-label="End of the section">
+			<p>Next: Your sessions across every surface.</p>
+		</section>
+	</main>
+
+	<nav class="mh-stops" id="mh-stops" aria-label="Stops in the section"></nav>
+
+<script src="vendor/lenis.min.js"></script>
+<script src="data.js"></script>
+<script src="section.js"></script>
+</body>
+</html>
